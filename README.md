@@ -9,3 +9,6 @@ Learning Java step by step and keeping track of my progress.
 - 26-04-27: 챕터 5 (배열, 다차원 배열, 아스키코드) 및 퀴즈 5번(신발 사이즈 재고 확인) 완료
 - 26-04-28: 챕터 1~5 통합 복습 및 챕터 6 메소드(기본, 매개변수, 반환값, 오버로딩) 학습 완료
 - 26-04-30: 챕터 6 메소드 심화(변수 범위, 인수 활용) 및 개인정보(이메일) 마스킹 응용 실습 완료
+- 26-05-11: MyAccountManager 클래스 구조 설계 및 에러 디버깅
+  - Static Context와 Instance Context의 차이점 학습
+  - 내부 클래스(Inner Class) 사용 시의 주의사항 및 구조 개선
