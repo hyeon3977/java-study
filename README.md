@@ -15,6 +15,9 @@ Learning Java step by step and keeping track of my progress.
 - 26-05-12: 가계부 데이터 영속성(Persistence) 구현
   - java.io 패키지를 활용한 파일 저장(Save) 및 로드(Load) 기능 추가
   - 데이터 파싱 및 예외 처리(try-with-resources) 학습
-- 26-05-13: Scanner 기반 대화형 인터페이스 구축
+- 26-05-13: Scanner 기반 대화형 인터페이스 구축 및 데이터 관리 고도화
   - 사용자의 콘솔 입력에 따른 입출금 제어 시스템 구현
   - Switch-case문을 활용한 메뉴 분기 처리 학습
+  - 파일 입출력(File I/O)을 통한 데이터 영속성 구현
+  - 지출 통계 및 고정 지출 비율 계산 로직 구현
+  - Switch-case 기반의 안정적인 메뉴 분기 처리 및 예외 상황 대응
