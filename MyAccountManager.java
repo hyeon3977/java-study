@@ -134,7 +134,7 @@ public class MyAccountManager {
                         System.out.print("금액: ");
                         int wAmount = scanner.nextInt();
                         System.out.print("고정지출인가요? (true/false): ");
-                        boolean isFixed = scanner.hasNextBoolean();
+                        boolean isFixed = scanner.nextBoolean();
                         myBank.withdraw(wDate, wTitle, wAmount, isFixed);
                         break;
                     case 3:
@@ -149,11 +149,6 @@ public class MyAccountManager {
                         System.out.println("잘못된 선택입니다.");
                 }
             }
-
-            myBank.deposit("05-11", "월급", 220000);
-            myBank.withdraw("05-11", "월세", 35000, true);
-            myBank.withdraw("05-11", "교통비", 10000, true);
-            myBank.withdraw("05-11", "식비", 1200, false);
         }
     }
 
