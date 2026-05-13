@@ -102,6 +102,30 @@ public class MyAccountManager {
             System.out.println("==========================================\n");
         }
 
+        public void showStatistics() {
+            int totalDeposit = 0;
+            int totalFixedWithdraw = 0;
+            int totalVariavleWithdraw = 0;
+
+            for (Transaction t : history) {
+                if (t.type.equals("입금")) {
+                    totalDeposit += t.amount;
+                } else if (t.type.equals("고정지출")) {
+                    totalFixedWithdraw += t.amount;
+                } else if (t.type.equals("유동지출")) {
+                    totalVariavleWithdraw += t.amount;
+                }
+            }
+
+            System.out.println("\n======== 지출/수입 통계 ========");
+            System.out.println("총 입금액: " + totalDeposit + "원");
+            System.out.println("총 고정지출: " + totalFixedWithdraw + "원");
+            System.out.println("총 유동지출: " + totalVariavleWithdraw + "원");
+            System.out.println("---------------------------------");
+            System.out.println("순수 지출 합계: " + (totalFixedWithdraw + totalVariavleWithdraw) + "원");
+            System.out.println("==================================\n");
+        }
+
         public static void main(String[] args) {
             MyAccountManager myBank = new MyAccountManager();
             Scanner scanner = new Scanner(System.in);
@@ -110,8 +134,8 @@ public class MyAccountManager {
             boolean isRunning = true;
             while (isRunning) {
                 System.out.println("\n--- 가계부 관리 시스템 ---");
-                System.out.println("1. 입금 2. 지출 3. 내역조회 4. 종료");
-                System.out.println("선택: ");
+                System.out.println("1. 입금 2. 지출 3. 내역조회 4. 통계보기 5. 종료");
+                System.out.print("선택: ");
 
                 int choice = scanner.nextInt();
                 scanner.nextLine();
@@ -141,6 +165,9 @@ public class MyAccountManager {
                         myBank.showReport();
                         break;
                     case 4:
+                        myBank.showStatistics();
+                        break;
+                    case 5:
                         myBank.saveData();
                         isRunning = false;
                         System.out.println("프로그램을 종료합니다.");
