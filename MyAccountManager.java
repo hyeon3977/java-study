@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
+import java.util.Scanner;
 
 
 class Transaction {
@@ -103,17 +104,56 @@ public class MyAccountManager {
 
         public static void main(String[] args) {
             MyAccountManager myBank = new MyAccountManager();
-
+            Scanner scanner = new Scanner(System.in);
             myBank.loadData();
+
+            boolean isRunning = true;
+            while (isRunning) {
+                System.out.println("\n--- 가계부 관리 시스템 ---");
+                System.out.println("1. 입금 2. 지출 3. 내역조회 4. 종료");
+                System.out.println("선택: ");
+
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("날짜(MM-DD): ");
+                        String dDate = scanner.nextLine();
+                        System.out.print("항목: ");
+                        String dTitle = scanner.nextLine();
+                        System.out.print("금액: ");
+                        int dAmount = scanner.nextInt();
+                        myBank.deposit(dDate, dTitle, dAmount);
+                        break;
+                    case 2:
+                        System.out.print("날짜(MM-DD): ");
+                        String wDate = scanner.nextLine();
+                        System.out.print("항목: ");
+                        String wTitle = scanner.nextLine();
+                        System.out.print("금액: ");
+                        int wAmount = scanner.nextInt();
+                        System.out.print("고정지출인가요? (true/false): ");
+                        boolean isFixed = scanner.hasNextBoolean();
+                        myBank.withdraw(wDate, wTitle, wAmount, isFixed);
+                        break;
+                    case 3:
+                        myBank.showReport();
+                        break;
+                    case 4:
+                        myBank.saveData();
+                        isRunning = false;
+                        System.out.println("프로그램을 종료합니다.");
+                        break;
+                    default:
+                        System.out.println("잘못된 선택입니다.");
+                }
+            }
 
             myBank.deposit("05-11", "월급", 220000);
             myBank.withdraw("05-11", "월세", 35000, true);
             myBank.withdraw("05-11", "교통비", 10000, true);
             myBank.withdraw("05-11", "식비", 1200, false);
-
-            myBank.showReport();
-
-            myBank.saveData();
         }
     }
 
