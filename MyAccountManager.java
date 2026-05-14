@@ -94,8 +94,14 @@ public class MyAccountManager {
 
         public void showReport() {
             System.out.println("\n=========== 가계부 최종 리포트 ===========");
-            for (Transaction t : history) {
-                System.out.println(t);
+            if (history.isEmpty()) {
+                System.out.println("기록된 내역이 없습니다.");
+            } else {
+
+                for (int i = 0; i < history.size(); i++) {
+                    System.out.println("[" + (i + 1) + "]");
+                    System.out.println(history.get(i));
+                }
             }
             System.out.println("------------------------------------------");
             System.out.println("현재 계좌 최종 잔액: " + currentBalance + "원");
@@ -126,6 +132,37 @@ public class MyAccountManager {
             System.out.println("==================================\n");
         }
 
+        public void deleteTransaction(int index) {
+            Transaction removed = history.remove(index);
+            System.out.println("삭제 완료: " + removed.title);
+            recalculateBalance();
+        }
+
+        public void updateTransaction(int index, String date, String title, int amount) {
+            if (index >= 0 && index < history.size()) {
+                Transaction t = history.get(index);
+                t.date = date;
+                t.title = title;
+                t.amount = amount;
+                recalculateBalance();
+            }
+        }
+
+        public int getHistorySize() {
+            return history.size();
+        }
+
+        public void recalculateBalance() {
+            currentBalance = 0;
+            for (Transaction t : history) {
+                if (t.type.equals("입금")) {
+                    currentBalance += t.amount;
+                } else {
+                    currentBalance -= t.amount;
+                }
+            }
+        }
+
         public static void main(String[] args) {
             MyAccountManager myBank = new MyAccountManager();
             Scanner scanner = new Scanner(System.in);
@@ -134,7 +171,7 @@ public class MyAccountManager {
             boolean isRunning = true;
             while (isRunning) {
                 System.out.println("\n--- 가계부 관리 시스템 ---");
-                System.out.println("1. 입금 2. 지출 3. 내역조회 4. 통계보기 5. 종료");
+                System.out.println("1. 입금 2. 지출 3. 내역조회 4. 통계보기 5. 종료 6. 내역 수정 7. 내역 삭제");
                 System.out.print("선택: ");
 
                 int choice = scanner.nextInt();
@@ -172,10 +209,41 @@ public class MyAccountManager {
                         isRunning = false;
                         System.out.println("프로그램을 종료합니다.");
                         break;
+                    case 6:
+                        myBank.showReport();
+                        System.out.println("수정할 내역의 번호를 입력하세요: ");
+                        int updateIdx = scanner.nextInt() - 1;
+                        scanner.nextLine();
+
+                        if (updateIdx >= 0 && updateIdx < myBank.getHistorySize()) {
+                            System.out.print("새로운 날짜(MM-DD): ");
+                            String nDate = scanner.nextLine();
+                            System.out.print("새로운 항목: ");
+                            String nTitle = scanner.nextLine();
+                            System.out.print("새로운 금액: ");
+                            int nAmount = scanner.nextInt();
+                            scanner.nextLine();
+
+                            myBank.updateTransaction(updateIdx, nDate, nTitle, nAmount);
+                        } else {
+                            System.out.println("해당 번호를 찾을 수 없습니다.");
+                        }
+                        break;
+                    case 7:
+                        myBank.showReport();
+                        System.out.print("삭제할 내역의 번호를 입력하세요.");
+                        int deleteIdx = scanner.nextInt() - 1;
+                        scanner.nextLine();
+
+                        if (deleteIdx >= 0 && deleteIdx < myBank.getHistorySize()) {
+                            myBank.deleteTransaction(deleteIdx);
+                        } else {
+                            System.out.println("삭제되었습니다.");
+                        }
+                        break;
                     default:
-                        System.out.println("잘못된 선택입니다.");
+                        System.out.println("잘못된 번호입니다.");
                 }
             }
         }
     }
-
