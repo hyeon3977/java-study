@@ -21,3 +21,8 @@ Learning Java step by step and keeping track of my progress.
   - 파일 입출력(File I/O)을 통한 데이터 영속성 구현
   - 지출 통계 및 고정 지출 비율 계산 로직 구현
   - Switch-case 기반의 안정적인 메뉴 분기 처리 및 예외 상황 대응
+- 26-05-14: 가계부 CRUD 기능 완성 및 데이터 정합성 로직 구현
+  - 리스트 인덱스(Index)를 활용한 특정 내역 수정 및 삭제 기능 추가
+  - 데이터 변경 시 잔액을 자동 재계산하는 recalculateBalance 로직 구현
+  - Scanner의 입력 버퍼(개행 문자) 처리 및 예외 상황(잘못된 번호 입력) 대응
+  - 사용자 편의를 위한 목록 번호 표시 기능 개선
