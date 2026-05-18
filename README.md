@@ -26,3 +26,8 @@ Learning Java step by step and keeping track of my progress.
   - 데이터 변경 시 잔액을 자동 재계산하는 recalculateBalance 로직 구현
   - Scanner의 입력 버퍼(개행 문자) 처리 및 예외 상황(잘못된 번호 입력) 대응
   - 사용자 편의를 위한 목록 번호 표시 기능 개선
+26-05-18: 가계부 UI 정밀 정렬 및 데이터 입력 편의 기능 추가
+- 4자리 날짜 입력 시 MM-DD로 자동 변환하는 formatDate 정규화 로직 구현
+- 한글 폭 계산 알고리즘(getPaddedCenter)을 통한 콘솔 출력 '가운데 정렬' 완성
+- 자바 8 하위 호환성을 고려한 StringBuilder 기반 공백 생성 로직 적용
+- 키워드 검색(searchTransactions) 기능 추가 및 전체 리포트 가독성 개선
