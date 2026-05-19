@@ -26,8 +26,12 @@ Learning Java step by step and keeping track of my progress.
   - 데이터 변경 시 잔액을 자동 재계산하는 recalculateBalance 로직 구현
   - Scanner의 입력 버퍼(개행 문자) 처리 및 예외 상황(잘못된 번호 입력) 대응
   - 사용자 편의를 위한 목록 번호 표시 기능 개선
-26-05-18: 가계부 UI 정밀 정렬 및 데이터 입력 편의 기능 추가
-- 4자리 날짜 입력 시 MM-DD로 자동 변환하는 formatDate 정규화 로직 구현
-- 한글 폭 계산 알고리즘(getPaddedCenter)을 통한 콘솔 출력 '가운데 정렬' 완성
-- 자바 8 하위 호환성을 고려한 StringBuilder 기반 공백 생성 로직 적용
-- 키워드 검색(searchTransactions) 기능 추가 및 전체 리포트 가독성 개선
+- 26-05-18: 가계부 UI 정밀 정렬 및 데이터 입력 편의 기능 추가
+ - 4자리 날짜 입력 시 MM-DD로 자동 변환하는 formatDate 정규화 로직 구현
+ - 한글 폭 계산 알고리즘(getPaddedCenter)을 통한 콘솔 출력 '가운데 정렬' 완성
+ - 자바 8 하위 호환성을 고려한 StringBuilder 기반 공백 생성 로직 적용
+ - 키워드 검색(searchTransactions) 기능 추가 및 전체 리포트 가독성 개선
+- 26-05-19: 가계부 내역 자동 정렬 및 기간별 범위 필터링 기능 추가
+ - 내역 조회 시 자바 표준 내장 API인 Collections.sort() 및 Comparator 기반의 자동 날짜순 오름차순 정렬 로직 적용
+ - 자바 8 람다식((t1, t2) -> ...) 문법을 적용하여 간결하고 명확한 객체 정렬 코드 작성
+ - String.compareTo() 연산 처리를 이용해 특정 시작 날짜부터 종료 날짜 구간 내의 데이터만 가려내는 기간별 조회(showRangeReport) 기능 구현
