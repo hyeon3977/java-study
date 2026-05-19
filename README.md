@@ -32,8 +32,8 @@ Learning Java step by step and keeping track of my progress.
   - 자바 8 하위 호환성을 고려한 StringBuilder 기반 공백 생성 로직 적용
   - 키워드 검색(searchTransactions) 기능 추가 및 전체 리포트 가독성 개선
 - 26-05-19: 가계부 예외 처리 안전장치 및 내역 정렬/기간 범위 필터링 기능 통합 구현
- - 메뉴 선택 및 금액 입력창에 숫자가 아닌 문자 입력 시 프로그램이 강제 종료되는 버그를 try-catch(InputMismatchException) 문단과 버퍼 비우기로 원천 차단
- - 잘못된 날짜(00월, 32일 등)를 필터링하는 isValidDate 데이터 유효성 검증 로직 반영
- - 외부 파일 수정으로 인한 데이터 오염 발생 시 NumberFormatException 처리를 통해 안정적인 예외 복구(skip) 기능 탑재
- - 내역 조회 시 자바 내장 API인 Collections.sort() 및 람다식을 활용한 자동 날짜순 정렬 로직 적용
- - String.compareTo() 연산 처리를 이용해 특정 시작 날짜부터 종료 날짜 구간 내의 데이터만 가려내는 기간별 조회(showRangeReport) 기능 구현
+  - 메뉴 선택 및 금액 입력창에 숫자가 아닌 문자 입력 시 프로그램이 강제 종료되는 버그를 try-catch(InputMismatchException) 문단과 버퍼 비우기로 원천 차단
+  - 잘못된 날짜(00월, 32일 등)를 필터링하는 isValidDate 데이터 유효성 검증 로직 반영
+  - 외부 파일 수정으로 인한 데이터 오염 발생 시 NumberFormatException 처리를 통해 안정적인 예외 복구(skip) 기능 탑재
+  - 내역 조회 시 자바 내장 API인 Collections.sort() 및 람다식을 활용한 자동 날짜순 정렬 로직 적용
+  - String.compareTo() 연산 처리를 이용해 특정 시작 날짜부터 종료 날짜 구간 내의 데이터만 가려내는 기간별 조회(showRangeReport) 기능 구현
