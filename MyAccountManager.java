@@ -2,6 +2,9 @@ package Practice;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -70,7 +73,14 @@ public class MyAccountManager {
                 String date = data[0];
                 String title = data[1];
                 String type = data[2];
-                int amount = Integer.parseInt(data[3]);
+
+                int amount;
+                try {
+                    amount = Integer.parseInt(data[3].trim());
+                } catch (NumberFormatException e) {
+                    System.out.println("파일 로드 중 손상된 데이터 발견(금액 오류). 해당 내역을 스킵합니다.");
+                    continue;
+                }
 
                 history.add(new Transaction(date, title, type, amount));
                 if (type.equals("입금")) currentBalance += amount;
@@ -112,6 +122,14 @@ public class MyAccountManager {
     }
 
     public void showReport() {
+        if (!history.isEmpty()) {
+            Collections.sort(history, new Comparator<Transaction>() {
+                @Override
+                public int compare(Transaction t1, Transaction t2) {
+                    return t1.date.compareTo(t2.date);
+                }
+            });
+        }
         System.out.println("\n==========================================================================");
         System.out.println("   번호   |    날짜    |         항목         |     구분     |      금액      ");
         System.out.println("--------------------------------------------------------------------------");
@@ -124,6 +142,28 @@ public class MyAccountManager {
         }
         System.out.println("--------------------------------------------------------------------------");
         System.out.printf("   현재 최종 잔액: %,53d원%n", currentBalance);
+        System.out.println("==========================================================================\n");
+    }
+
+    public void showRangeReport(String startDate, String endDate) {
+        System.out.println("\n======================= 기간별 조회 (" + startDate + " ~ " + endDate + ") =======================");
+        System.out.println("   번호   |    날짜    |         항목         |     구분     |      금액      ");
+        System.out.println("--------------------------------------------------------------------------");
+
+        Collections.sort(history, (t1,t2) -> t1.date.compareTo(t2.date));
+
+        boolean found = false;
+        int printIdx = 1;
+        for (Transaction t : history) {
+            if (t.date.compareTo(startDate) >= 0 && t.date.compareTo(endDate) <= 0) {
+                System.out.printf(" [%2d ] |%s%n", printIdx++, t);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("                         해당 기간의 내역이 없습니다.                    ");
+        }
         System.out.println("==========================================================================\n");
     }
 
@@ -183,7 +223,7 @@ public class MyAccountManager {
     }
 
     public void searchTransactions(String keyword) {
-        System.out.println("\n========================== 키워드 검색 결과 ==========================");
+        System.out.println("\n=============================== 키워드 검색 결과 ==============================");
         System.out.println("  검색어: " + keyword);
         System.out.println("----------------------------------------------------------------------------");
         boolean found = false;
@@ -195,6 +235,17 @@ public class MyAccountManager {
         }
         if (!found) System.out.println("                         검색 결과가 없습니다.                         ");
         System.out.println("============================================================================\n");
+    }
+
+    private static boolean isValidDate(String date) {
+        if (date.length() != 5 || date.charAt(2) != '-') return false;
+        try {
+            int month = Integer.parseInt(date.substring(0, 2));
+            int day = Integer.parseInt(date.substring(3, 5));
+            return (month >= 1 && month <= 12) && (day >= 1 && day <= 31);
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private static String formatDate(String input) {
@@ -211,12 +262,19 @@ public class MyAccountManager {
 
         boolean isRunning = true;
         while (isRunning) {
-            System.out.println("\n--- 가계부 관리 시스템 ---");
-            System.out.println("1. 입금 2. 지출 3. 내역조회 4. 통계보기 5. 종료 6. 내역 수정 7. 내역 삭제 8. 검색");
+            System.out.println("\n===============================   가계부 관리 시스템   ===============================");
+            System.out.println("1. 입금 2. 지출 3. 내역조회 4. 통계보기 5. 종료 6. 내역 수정 7. 내역 삭제 8. 검색 9. 기간별조회");
             System.out.print("선택: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("잘못된 입력입니다. 메뉴 번호(숫자)만 입력해주세요.");
+                scanner.nextLine();
+                continue;
+            }
 
             switch (choice) {
                 case 1:
@@ -272,7 +330,7 @@ public class MyAccountManager {
                     break;
                 case 7:
                     myBank.showReport();
-                    System.out.print("삭제할 내역의 번호를 입력하세요.");
+                    System.out.print("삭제 내역 번호: ");
                     int deleteIdx = scanner.nextInt() - 1;
                     scanner.nextLine();
 
@@ -287,6 +345,22 @@ public class MyAccountManager {
                     String keyword = scanner.nextLine();
                     myBank.searchTransactions(keyword);
                     break;
+                case 9:
+                    System.out.println("시작 날짜(MMDD): ");
+                    String startDate = formatDate(scanner.nextLine());
+                    if (!isValidDate(startDate)) {
+                        System.out.println("날짜 형식이 올바르지 않습니다.");
+                        break;
+                    }
+                    System.out.println("종료 날짜(MMDD): ");
+                    String endDate = formatDate(scanner.nextLine());
+                    if (!isValidDate(endDate)) {
+                        System.out.println("날짜 형식이 올바르지 않습니다.");
+                        break;
+                    }
+                    myBank.showRangeReport(startDate, endDate);
+                    break;
+
                 default:
                     System.out.println("잘못된 번호입니다.");
             }
