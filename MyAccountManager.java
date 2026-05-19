@@ -360,7 +360,6 @@ public class MyAccountManager {
                     }
                     myBank.showRangeReport(startDate, endDate);
                     break;
-
                 default:
                     System.out.println("잘못된 번호입니다.");
             }
