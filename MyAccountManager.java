@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Scanner;
 
 
-class Transaction {
+class Transaction implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     String date, title, type;
     int amount;
 
@@ -50,54 +52,35 @@ class Transaction {
 
         return String.format("%s|%s|%s|%,12d원", pDate, pTitle, pType, amount);
     }
-    public String toFileString() {
-        return String.format("%s,%s,%s,%d", date, title, type, amount);
-    }
 }
 
 public class MyAccountManager {
     private int currentBalance = 0;
-    private final List<Transaction> history = new ArrayList<>();
-    private final String FILE_NAME = "account_data.txt";
+    private List<Transaction> history = new ArrayList<>();
+    private final String FILE_NAME = "account_data.ser";
 
+    @SuppressWarnings("unchecked")
     public void loadData() {
         File file = new File(FILE_NAME);
         if (!file.exists()) return;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length < 4) continue;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            history = (List<Transaction>) ois.readObject();
 
-                String date = data[0];
-                String title = data[1];
-                String type = data[2];
+            recalculateBalance();
 
-                int amount;
-                try {
-                    amount = Integer.parseInt(data[3].trim());
-                } catch (NumberFormatException e) {
-                    System.out.println("파일 로드 중 손상된 데이터 발견(금액 오류). 해당 내역을 스킵합니다.");
-                    continue;
-                }
-
-                history.add(new Transaction(date, title, type, amount));
-                if (type.equals("입금")) currentBalance += amount;
-                else currentBalance -= amount;
-            }
-            System.out.println("이전 데이터를 성공적으로 불러왔습니다.");
-        } catch (IOException e) {
+            System.out.println("이전 데이터를 객체 역직렬화를 통해 성공적으로 불러왔습니다.");
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println("로드 중 오류 발생: " + e.getMessage());
         }
     }
 
     public void saveData() {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(FILE_NAME))) {
-            for (Transaction t : history) {
-                pw.println(t.toFileString());
-            }
-            System.out.println("데이터가 '" + FILE_NAME + "'에 저장되었습니다.");
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+
+            oos.writeObject(history);
+
+            System.out.println("데이터가 객체 직렬화를 통해 '" + FILE_NAME + "'에 안전하게 저장되었습니다.");
         } catch (IOException e) {
             System.out.println("저장 중 오류 발생: " + e.getMessage());
         }
@@ -360,6 +343,7 @@ public class MyAccountManager {
                     }
                     myBank.showRangeReport(startDate, endDate);
                     break;
+
                 default:
                     System.out.println("잘못된 번호입니다.");
             }
