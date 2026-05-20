@@ -38,7 +38,7 @@ Learning Java step by step and keeping track of my progress.
   - 내역 조회 시 자바 내장 API인 Collections.sort() 및 람다식을 활용한 자동 날짜순 정렬 로직 적용
   - String.compareTo() 연산 처리를 이용해 특정 시작 날짜부터 종료 날짜 구간 내의 데이터만 가려내는 기간별 조회(showRangeReport) 기능 구현
 - 26-05-20: 가계부 객체 직렬화(Serialization) 도입 및 저장 구조 혁신
- - 문자열을 일일이 파싱하고 결합하던 기존 텍스트 저장 방식을 자바 표준 객체 직렬화 메커니즘으로 전면 교체
- - Transaction 객체에 'Serializable' 인터페이스를 구현하고 'serialVersionUID'를 명시하여 데이터 구조 변경에 따른 버전 호환성 확보
- - 'ObjectOutputStream' 및 'ObjectInputStream'을 적용하여 'ArrayList<Transaction>' 리스트 객체 자체를 통째로 파일에 저장하고 역직렬화(Deserialization)로 한 번에 복원하는 구조 빌드
- - 파일 형식을 바이너리(.ser) 확장자로 전환하여 외부 텍스트 편집기(메모장 등)를 통한 악의적이거나 실수에 의한 데이터 위변조 및 오염 가능성을 원천 차단
+  - 문자열을 일일이 파싱하고 결합하던 기존 텍스트 저장 방식을 자바 표준 객체 직렬화 메커니즘으로 전면 교체
+  - Transaction 객체에 'Serializable' 인터페이스를 구현하고 'serialVersionUID'를 명시하여 데이터 구조 변경에 따른 버전 호환성 확보
+  - 'ObjectOutputStream' 및 'ObjectInputStream'을 적용하여 'ArrayList<Transaction>' 리스트 객체 자체를 통째로 파일에 저장하고 역직렬화(Deserialization)로 한 번에 복원하는 구조 빌드
+  - 파일 형식을 바이너리(.ser) 확장자로 전환하여 외부 텍스트 편집기(메모장 등)를 통한 악의적이거나 실수에 의한 데이터 위변조 및 오염 가능성을 원천 차단
