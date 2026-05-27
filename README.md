@@ -42,3 +42,8 @@ Learning Java step by step and keeping track of my progress.
   - Transaction 객체에 'Serializable' 인터페이스를 구현하고 'serialVersionUID'를 명시하여 데이터 구조 변경에 따른 버전 호환성 확보
   - 'ObjectOutputStream' 및 'ObjectInputStream'을 적용하여 'ArrayList<Transaction>' 리스트 객체 자체를 통째로 파일에 저장하고 역직렬화(Deserialization)로 한 번에 복원하는 구조 빌드
   - 파일 형식을 바이너리(.ser) 확장자로 전환하여 외부 텍스트 편집기(메모장 등)를 통한 악의적이거나 실수에 의한 데이터 위변조 및 오염 가능성을 원천 차단
+- 26-05-28: 가계부 카테고리 통계 확장 및 직렬화 데이터 호환성 방어
+  - 자료구조 'HashMap'과 'getOrDefault()' 메서드를 융합하여 수동 분류 없이 카테고리별로 총지출 금액을 실시간 누적 합산하는 세부 통계 시스템 빌드
+  - Transaction 객체에 새로운 필드(category)가 추가됨에 따라 구버전 데이터 파일(`account_data.ser`) 로드 시 유입되는 'null' 값을 하이픈('-')으로 자동 치환하는 방어 로직 탑재
+  - 'loadData()' 및 키워드 검색('searchTransactions()') 단계에서 발생할 수 있는 'NullPointerException'의 위험 요소를 완전히 제거하여 프로그램 하위 호환성 확보
+  - 추가된 카테고리 컬럼에 맞춰 'showReport()' 내의 상/하단 콘솔 테두리 구분선 및 최종 잔액 정렬 여백을 수동 매칭하여 표 레이아웃 정돈
