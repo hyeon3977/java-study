@@ -47,3 +47,8 @@ Learning Java step by step and keeping track of my progress.
   - Transaction 객체에 새로운 필드(category)가 추가됨에 따라 구버전 데이터 파일(`account_data.ser`) 로드 시 유입되는 'null' 값을 하이픈('-')으로 자동 치환하는 방어 로직 탑재
   - 'loadData()' 및 키워드 검색('searchTransactions()') 단계에서 발생할 수 있는 'NullPointerException'의 위험 요소를 완전히 제거하여 프로그램 하위 호환성 확보
   - 추가된 카테고리 컬럼에 맞춰 'showReport()' 내의 상/하단 콘솔 테두리 구분선 및 최종 잔액 정렬 여백을 수동 매칭하여 표 레이아웃 정돈
+- 26-06-02: TransactionRepository 인터페이스 도입 및 다형성 기반 의존성 주입 구조 확립
+  - 기존에 가계부 메인 비즈니스 로직과 데이터 입출력 기능이 타이트하게 묶여있던 고결합 구조를 타파하기 위해 'TransactionRepository' 인터페이스 설계
+  - 인터페이스 규격을 상속받아 바이너리 객체 직렬화 파일 처리를 전담하는 'FileTransactionRepository' 클래스로 데이터 접근 로직을 완벽히 격리
+  - 'MyAccountManager' 생성자 매개변수를 통해 외부에서 구현체를 주입받는 제어의 역전(IoC) 및 의존성 주입(DI) 아키텍처 패턴을 가계부 시스템 전체에 안착
+  - 데이터 저장 메커니즘을 캡슐화함으로써 메인 서비스 코드를 단 한 줄도 수정하지 않고 향후 데이터베이스나 메모리 기반 저장소로 손쉽게 갈아끼울 수 있는 구조적 확장성 획득
