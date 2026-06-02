@@ -65,42 +65,61 @@ class Transaction implements Serializable {
     }
 }
 
-public class MyAccountManager {
-    private int currentBalance = 0;
-    private List<Transaction> history = new ArrayList<>();
-    private final String FILE_NAME = "account_data.ser";
+interface TransactionRepository {
+    void save(List<Transaction> transactions);
+    List<Transaction> load();
+}
 
+class FileTransactionRepository implements TransactionRepository {
+    private final String fileName = "account_data.ser";
+
+    @Override
+    public void save(List<Transaction> transactions) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(transactions);
+        } catch (IOException e) {
+            System.out.println("[오류] 파일 저장 중 문제가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
-    public void loadData() {
-        File file = new File(FILE_NAME);
-        if (!file.exists()) return;
+    public List<Transaction> load() {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            return new ArrayList<>();
+        }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            history = (List<Transaction>) ois.readObject();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            List<Transaction> data = (List<Transaction>) ois.readObject();
 
-            for (Transaction t : history) {
+            for (Transaction t : data) {
                 if (t.category == null) {
                     t.category = "-";
                 }
             }
-
-            recalculateBalance();
-
             System.out.println("이전 데이터를 객체 역직렬화를 통해 성공적으로 불러왔습니다.");
+            return data;
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("로드 중 오류 발생: " + e.getMessage());
+            System.out.println("[오류] 데이터 로드 중 문제가 발생했습니다. 빈 시스템으로 시작합니다.");
+            return new ArrayList<>();
         }
+    }
+}
+
+public class MyAccountManager {
+    private int currentBalance = 0;
+    private List<Transaction> history = new ArrayList<>();
+    private final TransactionRepository repository;
+
+    public MyAccountManager(TransactionRepository repository) {
+        this.repository = repository;
+        this.history = repository.load();
+        recalculateBalance();
     }
 
     public void saveData() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-
-            oos.writeObject(history);
-
-            System.out.println("데이터가 객체 직렬화를 통해 '" + FILE_NAME + "'에 안전하게 저장되었습니다.");
-        } catch (IOException e) {
-            System.out.println("저장 중 오류 발생: " + e.getMessage());
-        }
+        repository.save(history);
     }
 
     public void deposit(String date, String title, int amount) {
@@ -108,7 +127,6 @@ public class MyAccountManager {
         history.add(new Transaction(date, title, "입금", amount));
         System.out.println("입금 완료: " + title + " (" + amount + "원)");
     }
-
     public void withdraw(String date, String title, int amount, boolean isFixed, String category) {
         String type = isFixed ? "고정지출" : "유동지출";
 
@@ -117,7 +135,7 @@ public class MyAccountManager {
             history.add(new Transaction(date, title, type, amount, category));
             System.out.println("지출 완료: " + title + " [" + type + "] (" + amount + "원)");
         } else {
-            System.out.println("잔고 부족으로 '" + title + "' 결제 실패 (현재 잔액: " + currentBalance + "원)");
+            System.out.println("잔고 부족으로 '" + title + "'결제 실패 (현재 잔액: " + currentBalance + "원)");
         }
     }
 
@@ -180,12 +198,12 @@ public class MyAccountManager {
             } else {
                 if (t.type.equals("고정지출")) {
                     totalFixedWithdraw += t.amount;
-            } else if (t.type.equals("유동지출")) {
-                totalVariavleWithdraw += t.amount;
+                } else if (t.type.equals("유동지출")) {
+                    totalVariavleWithdraw += t.amount;
+                }
+                categoryMap.put(t.category, categoryMap.getOrDefault(t.category, 0) + t.amount);
             }
-            categoryMap.put(t.category, categoryMap.getOrDefault(t.category, 0) + t.amount);
         }
-    }
 
         System.out.println("\n====================== 지출/수입 통계 ======================");
         System.out.printf("     총 입금액     : %,35d원%n",totalDeposit);
@@ -245,7 +263,7 @@ public class MyAccountManager {
         boolean found = false;
         for (Transaction t : history) {
             String targetCat = t.category != null ? t.category : "-";
-            if (t.title.contains(keyword) || t.category.contains(keyword)) {
+            if (t.title.contains(keyword) || targetCat.contains(keyword)) {
                 System.out.printf(" [ 결과 ]  |%s%n", t);
                 found = true;
             }
@@ -273,9 +291,10 @@ public class MyAccountManager {
     }
 
     public static void main(String[] args) {
-        MyAccountManager myBank = new MyAccountManager();
+        TransactionRepository storage = new FileTransactionRepository();
+        MyAccountManager myBank = new MyAccountManager(storage);
+
         Scanner scanner = new Scanner(System.in);
-        myBank.loadData();
 
         boolean isRunning = true;
         while (isRunning) {
