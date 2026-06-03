@@ -52,3 +52,7 @@ Learning Java step by step and keeping track of my progress.
   - 인터페이스 규격을 상속받아 바이너리 객체 직렬화 파일 처리를 전담하는 'FileTransactionRepository' 클래스로 데이터 접근 로직을 완벽히 격리
   - 'MyAccountManager' 생성자 매개변수를 통해 외부에서 구현체를 주입받는 제어의 역전(IoC) 및 의존성 주입(DI) 아키텍처 패턴을 가계부 시스템 전체에 안착
   - 데이터 저장 메커니즘을 캡슐화함으로써 메인 서비스 코드를 단 한 줄도 수정하지 않고 향후 데이터베이스나 메모리 기반 저장소로 손쉽게 갈아끼울 수 있는 구조적 확장성 획득
+- 26-06-03: 모던 자바 스트림(Stream) API 및 람다(Lambda) 식 도입을 통한 데이터 처리 고도화
+  - 가계부 내역의 핵심 조회 기능인 '키워드 검색(searchTransactions)' 및 '기간별 조회(showRangeReport)' 기능에 자바 8+ 모던 스펙 전면 적용
+  - 명령형(How) 방식의 지저분한 전통 for 루프와 중첩 if 조건을 선언형(What) 방식의 스트림 파이프라인(.stream().filter().sorted())으로 완벽하게 리팩토링
+  - 람다식 내 변수 제약(Effectively Final)을 배열 우회 트릭(`int[] printIdx`)을 활용해 깔끔히 제어하며 가독성 높고 유지보수하기 쉬운 클린 코드 아키텍처 달성
