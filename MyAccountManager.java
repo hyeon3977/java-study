@@ -168,18 +168,15 @@ public class MyAccountManager {
         System.out.println("   번호   |    날짜    |         항목         |     구분     |  카테고리  |      금액      ");
         System.out.println("----------------------------------------------------------------------------------");
 
-        Collections.sort(history, (t1,t2) -> t1.date.compareTo(t2.date));
+        int[] printIdx = {1};
 
-        boolean found = false;
-        int printIdx = 1;
-        for (Transaction t : history) {
-            if (t.date.compareTo(startDate) >= 0 && t.date.compareTo(endDate) <= 0) {
-                System.out.printf(" [%2d ] |%s%n", printIdx++, t);
-                found = true;
-            }
-        }
+        long matchCount = history.stream()
+                .sorted((t1, t2) -> t1.date.compareTo(t2.date))
+                .filter(t -> t.date.compareTo(startDate) >= 0 && t.date.compareTo(endDate) <= 0)
+                .peek(t -> System.out.printf(" [%2d ] |%s%n", printIdx[0]++, t))
+                .count();
 
-        if (!found) {
+        if (matchCount == 0) {
             System.out.println("                         해당 기간의 내역이 없습니다.                    ");
         }
         System.out.println("==========================================================================\n");
@@ -188,7 +185,7 @@ public class MyAccountManager {
     public void showStatistics() {
         int totalDeposit = 0;
         int totalFixedWithdraw = 0;
-        int totalVariavleWithdraw = 0;
+        int totalVariableWithdraw = 0;
 
         Map<String, Integer> categoryMap = new HashMap();
 
@@ -199,7 +196,7 @@ public class MyAccountManager {
                 if (t.type.equals("고정지출")) {
                     totalFixedWithdraw += t.amount;
                 } else if (t.type.equals("유동지출")) {
-                    totalVariavleWithdraw += t.amount;
+                    totalVariableWithdraw += t.amount;
                 }
                 categoryMap.put(t.category, categoryMap.getOrDefault(t.category, 0) + t.amount);
             }
@@ -208,9 +205,9 @@ public class MyAccountManager {
         System.out.println("\n====================== 지출/수입 통계 ======================");
         System.out.printf("     총 입금액     : %,35d원%n",totalDeposit);
         System.out.printf("     고정 지출     : %,35d원%n",totalFixedWithdraw);
-        System.out.printf("     유동 지출     : %,35d원%n",totalVariavleWithdraw);
+        System.out.printf("     유동 지출     : %,35d원%n",totalVariableWithdraw);
         System.out.println("------------------------------------------------------------");
-        System.out.printf("     총 지출 합계   : %,35d원%n",(totalFixedWithdraw + totalVariavleWithdraw));
+        System.out.printf("     총 지출 합계   : %,35d원%n",(totalFixedWithdraw + totalVariableWithdraw));
         System.out.println("============================================================\n");
         System.out.println(" [카테고리별 세부 지출 통계]");
 
@@ -260,15 +257,18 @@ public class MyAccountManager {
         System.out.println("\n=============================== 키워드 검색 결과 ==============================");
         System.out.println("  검색어: " + keyword);
         System.out.println("----------------------------------------------------------------------------");
-        boolean found = false;
-        for (Transaction t : history) {
-            String targetCat = t.category != null ? t.category : "-";
-            if (t.title.contains(keyword) || targetCat.contains(keyword)) {
-                System.out.printf(" [ 결과 ]  |%s%n", t);
-                found = true;
-            }
+
+        long matchCount = history.stream()
+                .filter(t -> {
+                    String targetCat = t.category != null ? t.category : "-";
+                    return t.title.contains(keyword) || targetCat.contains(keyword);
+                })
+                .peek(t -> System.out.printf(" [ 결과 ] |%s%n", t))
+                .count();
+
+        if (matchCount == 0) {
+            System.out.println("                         검색 결과가 없습니다.                         ");
         }
-        if (!found) System.out.println("                         검색 결과가 없습니다.                         ");
         System.out.println("============================================================================\n");
     }
 
